@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style Studio v31</title></head>
+<body style="padding:1rem;font-family:sans-serif;max-width:520px;margin:0 auto;padding-bottom:4rem">
+
+<h1>Style Studio v31</h1>
+
+<p>Cle API Agnes :</p>
+<textarea id="k" style="width:100%;min-height:45px;padding:.5rem;font-family:monospace;font-size:12px" placeholder="Colle ta cle M"></textarea>
+<button onclick="sauver()" style="padding:.7rem;width:100%;font-size:.85rem;background:#111;color:#fff;border:none;border-radius:8px;margin-top:.3rem">ENREGISTRER</button>
+<div id="out" style="margin-top:.5rem;padding:.5rem;background:#f0f0f0;border:2px solid #333;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all;min-height:30px">Etat : aucune cle</div>
+
+<hr style="margin:1rem 0">
+
+<p><b>1. Photo de reference :</b></p>
+<input type="file" accept="image/*" id="imgIn" style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:8px">
+<button onclick="chargerImage()" style="padding:.7rem;width:100%;font-size:.85rem;background:#111;color:#fff;border:none;border-radius:8px;margin-top:.3rem">CHARGER L IMAGE</button>
+<div id="imgOut" style="margin-top:.5rem;padding:.5rem;background:#f0f0f0;border:2px solid #333;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all;min-height:30px">Pas encore</div>
+<div id="imgWrap" style="margin-top:.5rem"></div>
+
+<hr style="margin:1rem 0">
+
+<p><b>2. TON PROMPT PERSONNALISE :</b></p>
+<textarea id="monPrompt" style="width:100%;min-height:90px;padding:.6rem;border:1px solid #ccc;border-radius:8px;font-family:inherit;font-size:.82rem;box-sizing:border-box" placeholder="Ex: Transforme cette photo en court-metrage Netflix dramatique. La femme est une espionne qui prepare sa derniere mission."></textarea>
+
+<hr style="margin:1rem 0">
+
+<p><b>3. PERSONNALISATION VETEMENTS ET ACCESSOIRES :</b></p>
+
+<p style="font-size:.75rem;color:#666;margin:.5rem 0 .2rem">Etat de la chemise :</p>
+<select id="etatChemise" style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:8px;font-size:.85rem;background:#fff">
+  <option value="">(garder tel quel)</option>
+  <option value="fermee jusqu au col, entierement boutonnee">Fermee jusqu au col (tout boutonne)</option>
+  <option value="fermee avec un seul bouton ouvert en haut">Un bouton ouvert en haut</option>
+  <option value="fermee avec deux boutons ouverts, petit decollete">Deux boutons ouverts</option>
+  <option value="semi-ouverte, trois boutons ouverts">Semi-ouverte (3 boutons)</option>
+  <option value="largement ouverte, poitrine visible sous un top">Grande ouverte</option>
+  <option value="nouee a la taille sans manches">Nouee a la taille</option>
+</select>
+
+<p style="font-size:.75rem;color:#666;margin:.6rem 0 .2rem">Style vestimentaire :</p>
+<select id="styleVetement" style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:8px;font-size:.85rem;background:#fff">
+  <option value="">(garder tel quel)</option>
+  <option value="tenue de bureau elegante, chemise et blazer">Bureau elegant</option>
+  <option value="tenue decontractee chic, jean et t-shirt blanc">Decontracte chic</option>
+  <option value="robe de soiree elegante">Robe de soiree</option>
+  <option value="tenue sportive moderne, survetement">Sportive</option>
+  <option value="tenue de soirée cocktail">Cocktail</option>
+  <option value="tenue streetwear urbaine">Streetwear</option>
+  <option value="tenue vintage annees 60">Vintage 60s</option>
+  <option value="tenue cyberpunk, cuir et neons">Cyberpunk</option>
+  <option value="tenue de detective noir, impermeable et chapeau">Detective noir</option>
+  <option value="tenue de reine medievale, robe longue brodee">Reine medievale</option>
+  <option value="tenue futuriste brillante, combinaison">Futuriste</option>
+</select>
+
+<p style="font-size:.75rem;color:#666;margin:.6rem 0 .2rem">Accessoires (1 par ligne) :</p>
+<textarea id="accessoires" style="width:100%;min-height:70px;padding:.5rem;border:1px solid #ccc;border-radius:8px;font-family:inherit;font-size:.82rem;box-sizing:border-box" placeholder="Ex:
+- Lunettes de soleil aviateur
+- Collier dore fin
+- Boucles d oreilles perles
+- Sac a main noir
+- Chapeau fedora
+- Montre classique"></textarea>
+
+<hr style="margin:1rem 0">
+
+<p><b>4. DUREE DES VIDEOS :</b></p>
+<select id="dureeVideo" style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:8px;font-size:.85rem;background:#fff">
+  <option value="6">6 secondes</option>
+  <option value="8">8 secondes</option>
+  <option value="10" selected>10 secondes</option>
+  <option value="12">12 secondes</option>
+  <option value="15">15 secondes</option>
+  <option value="20">20 secondes</option>
+</select>
+
+<p style="font-size:.75rem;color:#666;margin:.6rem 0 .2rem">Nombre de scenes :</p>
+<select id="nbScenes" style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:8px;font-size:.85rem;background:#fff">
+  <option value="3">3 scenes</option>
+  <option value="5" selected>5 scenes</option>
+  <option value="8">8 scenes</option>
+  <option value="10">10 scenes</option>
+</select>
+
+<button onclick="lancerIA()" style="padding:.9rem;width:100%;font-size:1rem;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-weight:bold;margin-top:.8rem">LANCER L IA (scenario + plans + styles)</button>
+<div id="iaOut" style="margin-top:.6rem;padding:.6rem;background:#f0f0f0;border:2px solid #333;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all;min-height:35px">Pas encore lance</div>
+
+<div id="scenarioBlock" style="display:none;margin-top:1rem">
+  <p><b>5. Scenario et plans :</b></p>
+  <div id="scenarioDisplay" style="padding:.7rem;background:#f5f0ff;border:2px solid #7c3aed;border-radius:8px;font-family:monospace;font-size:11px;white-space:pre-wrap;line-height:1.5;max-height:350px;overflow-y:auto"></div>
+</div>
+
+<div id="stylesBlock" style="display:none;margin-top:1rem">
+  <p><b>6. Styles proposes (coche ceux que tu veux) :</b></p>
+  <div id="stylesSuggestions"></div>
+  <hr style="margin:.8rem 0">
+  <button onclick="genererTout()" style="padding:.9rem;width:100%;font-size:1rem;background:#16a34a;color:#fff;border:none;border-radius:8px;font-weight:bold">GENERER LES IMAGES (1 par scene)</button>
+  <div id="genOut" style="margin-top:.6rem;padding:.6rem;background:#f0f0f0;border:2px solid #333;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all;min-height:35px">Pas encore lance</div>
+</div>
+
+<div id="scenesGrid" style="margin-top:1rem"></div>
+
+<script>
+var API_KEY = '';
+var IMAGE_DATA = '';
+var SCENARIO = null;
+var STYLES_IA = [];
+var STYLES_CHOISIS = [];
+var SCENES = [];
+
+function setOut(id, txt, color) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  if (color) el.style.background = color;
+}
+
+function sauver() {
+  var t = document.getElementById('k').value;
+  var cleaned = '';
+  for (var i = 0; i < t.length; i++) {
+    var c = t.charAt(i);
+    if (c !== ' ' && c !== '\n' && c !== '\r' && c !== '\t') cleaned += c;
+  }
+  var idx = cleaned.indexOf('sk-');
+  if (idx < 0) { setOut('out', 'Erreur : doit contenir sk-', '#ffebee'); return; }
+  var rest = cleaned.substring(idx);
+  var finalKey = 'sk-';
+  for (var j = 3; j < rest.length; j++) {
+    var ch = rest.charAt(j);
+    if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch === '_' || ch === '-') finalKey += ch;
+  }
+  if (finalKey.length < 20) { setOut('out', 'Cle trop courte', '#ffebee'); return; }
+  API_KEY = finalKey;
+  document.getElementById('k').value = finalKey;
+  setOut('out', 'CLE ENREGISTREE\n' + finalKey + '\n(' + finalKey.length + ' chars)', '#e8f5e9');
+}
+
+function chargerImage() {
+  var f = document.getElementById('imgIn').files[0];
+  if (!f) { setOut('imgOut', 'Choisis une image', '#ffebee'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.width, h = img.height;
+      var sc = Math.min(1, 1024 / Math.max(w, h));
+      var nw = Math.round(w * sc), nh = Math.round(h * sc);
+      var canvas = document.createElement('canvas');
+      canvas.width = nw; canvas.height = nh;
+      canvas.getContext('2d').drawImage(img, 0, 0, nw, nh);
+      var compressed = canvas.toDataURL('image/jpeg', 0.85);
+      IMAGE_DATA = compressed;
+      setOut('imgOut', 'IMAGE CHARGEE\n' + nw + 'x' + nh + ' px - ' + Math.round(compressed.length/1024) + ' Ko', '#e8f5e9');
+      document.getElementById('imgWrap').innerHTML = '<img src="' + compressed + '" style="max-width:100%;border-radius:8px;margin-top:.5rem">';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function extraireJSON(t) {
+  var d = t.indexOf('{');
+  var f = t.lastIndexOf('}');
+  if (d < 0 || f < 0) return null;
+  try { return JSON.parse(t.substring(d, f + 1)); } catch (e) { return null; }
+}
+
+function txtOrDefault(v, def) {
+  v = (v || '').trim();
+  return v ? v : def;
+}
+
+function lancerIA() {
+  if (!API_KEY) { setOut('iaOut', 'Enregistre la cle Agnes', '#ffebee'); return; }
+  if (!IMAGE_DATA) { setOut('iaOut', 'Charge une image d abord', '#ffebee'); return; }
+
+  var monPrompt = document.getElementById('monPrompt').value.trim();
+  if (!monPrompt) { setOut('iaOut', 'Ecris ton prompt d abord', '#ffebee'); return; }
+
+  var etatChemise = document.getElementById('etatChemise').value;
+  var styleVetement = document.getElementById('styleVetement').value;
+  var accessoires = document.getElementById('accessoires').value.trim();
+  var nbScenes = parseInt(document.getElementById('nbScenes').value, 10);
+
+  setOut('iaOut', 'L IA analyse et ecrit le scenario en ' + nbScenes + ' scenes...', '#fff8e1');
+
+  var sys = 'Tu es un scenariste et directeur artistique. Tu ecris un scenario de film complet avec une photo par scene (keyframes). Reponds UNIQUEMENT en JSON valide.';
+
+  var userInput = 'DEMANDE : ' + monPrompt;
+  if (etatChemise) userInput += '\n\nVETEMENT - etat de la chemise a respecter : ' + etatChemise;
+  if (styleVetement) userInput += '\nSTYLE VESTIMENTAIRE a respecter : ' + styleVetement;
+  if (accessoires) userInput += '\nACCESSOIRES a ajouter : ' + accessoires;
+
+  var usr = userInput + '\n\nAnalyse cette photo et ecris un scenario de ' + nbScenes + ' scenes. Chaque scene correspond a une image cle (keyframe) et sera animee en video. Retourne UNIQUEMENT ce JSON :\n' +
+    '{\n' +
+    '  "style_description": "francais 40 mots style visuel",\n' +
+    '  "character_description": "francais 60 mots personnage complet incluant vetements, accessoires, expression, pose",\n' +
+    '  "style_base_prompt": "english 80 words base prompt",\n' +
+    '  "mood": "mot",\n' +
+    '  "scenario": {\n' +
+    '    "title": "titre du film",\n' +
+    '    "logline": "resume une phrase",\n' +
+    '    "genre": "cinema | anime | cartoon | netflix | serie",\n' +
+    '    "synopsis": "francais 80 mots",\n' +
+    '    "scenes": [\n' +
+    '      {"scene_number": 1, "description": "description visuelle detaillee de cette scene", "image_prompt": "english 50 words for THIS scene keyframe image", "action_video": "english 30 words describing motion between this frame and the next"},\n' +
+    '      {"scene_number": 2, "description": "...", "image_prompt": "...", "action_video": "..."},\n' +
+    '      ... exactement ' + nbScenes + ' scenes\n' +
+    '    ],\n' +
+    '    "final_image_prompt": "english 50 words for the final frame of the film"\n' +
+    '  },\n' +
+    '  "styles_suggeres": [\n' +
+    '    {"title": "...", "sub": "...", "prompt": "english 30 words"},\n' +
+    '    ... au moins 10 styles varies\n' +
+    '  ]\n' +
+    '}';
+
+  fetch('https://apihub.agnes-ai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'agnes-2.5-flash',
+      messages: [
+        { role: 'system', content: sys },
+        { role: 'user', content: [
+          { type: 'text', text: usr },
+          { type: 'image_url', image_url: { url: IMAGE_DATA } }
+        ]}
+      ],
+      temperature: 0.6,
+      max_tokens: 4000
+    })
+  })
+  .then(function(r) { return r.text(); })
+  .then(function(txt) {
+    var data = JSON.parse(txt);
+    var msg = data.choices && data.choices[0] && data.choices[0].message;
+    var contenu = msg && (msg.content || msg.reasoning_content);
+    var parsed = extraireJSON(contenu);
+    if (!parsed) {
+      setOut('iaOut', 'JSON mal forme\n\n' + (contenu || '').substring(0, 400), '#fff8e1');
+      return;
+    }
+    SCENARIO = parsed;
+    STYLES_IA = (parsed.styles_suggeres || []).map(function(s, idx) {
+      return { id: 'ia_' + idx, title: s.title, sub: s.sub, prompt: s.prompt, selected: true };
+    });
+    setOut('iaOut', 'IA OK !\nTITRE : ' + (parsed.scenario ? parsed.scenario.title : '-') + '\nNB SCENES : ' + ((parsed.scenario && parsed.scenario.scenes) ? parsed.scenario.scenes.length : 0), '#e8f5e9');
+    afficherScenario(parsed);
+    afficherStylesIA();
+  })
+  .catch(function(e) { setOut('iaOut', 'Erreur : ' + e.message, '#ffebee'); });
+}
+
+function afficherScenario(parsed) {
+  var bloc = document.getElementById('scenarioBlock');
+  var disp = document.getElementById('scenarioDisplay');
+  if (!parsed.scenario) { bloc.style.display = 'none'; return; }
+  var sc = parsed.scenario;
+  var txt = 'TITRE : ' + (sc.title || '-') + '\n';
+  txt += 'GENRE : ' + (sc.genre || '-') + '\n';
+  txt += 'LOGLINE : ' + (sc.logline || '-') + '\n\n';
+  txt += 'SYNOPSIS :\n' + (sc.synopsis || '-') + '\n\n';
+  txt += 'SCENES :\n';
+  var scenes = sc.scenes || [];
+  for (var i = 0; i < scenes.length; i++) {
+    var s = scenes[i];
+    txt += '\n  SCENE ' + (s.scene_number || (i+1)) + ' :\n';
+    txt += '    ' + (s.description || '-') + '\n';
+  }
+  disp.textContent = txt;
+  bloc.style.display = 'block';
+}
+
+function afficherStylesIA() {
+  var bloc = document.getElementById('stylesBlock');
+  var cont = document.getElementById('stylesSuggestions');
+  var html = '';
+  for (var i = 0; i < STYLES_IA.length; i++) {
+    var s = STYLES_IA[i];
+    html += '<label style="display:flex;align-items:flex-start;gap:.5rem;padding:.5rem;background:#fff;border:2px solid #e5e5e5;border-radius:8px;margin-bottom:.35rem;cursor:pointer">';
+    html += '<input type="checkbox" ' + (s.selected ? 'checked' : '') + ' onchange="toggleStyle(' + i + ', this.checked)" style="margin-top:.2rem;width:18px;height:18px">';
+    html += '<div style="flex:1">';
+    html += '<div style="font-weight:bold;font-size:.85rem">' + (s.title || '') + '</div>';
+    html += '<div style="font-size:.7rem;color:#666">' + (s.sub || '') + '</div>';
+    html += '</div></label>';
+  }
+  cont.innerHTML = html;
+  bloc.style.display = 'block';
+}
+
+function toggleStyle(index, checked) {
+  if (STYLES_IA[index]) STYLES_IA[index].selected = checked;
+}
+
+function genererTout() {
+  if (!SCENARIO) { setOut('genOut', 'Lance l IA d abord', '#ffebee'); return; }
+  if (!API_KEY) { setOut('genOut', 'Enregistre la cle', '#ffebee'); return; }
+
+  STYLES_CHOISIS = STYLES_IA.filter(function(s) { return s.selected; });
+  if (!STYLES_CHOISIS.length) { setOut('genOut', 'Coche au moins un style', '#ffebee'); return; }
+
+  var sc = SCENARIO.scenario || {};
+  var scenesData = sc.scenes || [];
+  var finalPrompt = sc.final_image_prompt || '';
+
+  // Creer les scenes avec image_url = null
+  SCENES = [];
+  for (var i = 0; i < scenesData.length; i++) {
+    SCENES.push({
+      index: i,
+      scene: scenesData[i],
+      imagePrompt: scenesData[i].image_prompt || scenesData[i].description || '',
+      imageUrl: null,
+      videoUrl: null,
+      status: 'pending'
+    });
+  }
+
+  setOut('genOut', 'Generation de ' + STYLES_CHOISIS.length + ' style(s) x ' + SCENES.length + ' scenes = ' + (STYLES_CHOISIS.length * SCENES.length) + ' images...', '#fff8e1');
+  document.getElementById('scenesGrid').innerHTML = '';
+  renderScenesGrid();
+  genererImagesSequentielles(0, 0);
+}
+
+function renderScenesGrid() {
+  var html = '';
+  for (var s = 0; s < STYLES_CHOISIS.length; s++) {
+    var st = STYLES_CHOISIS[s];
+    html += '<div style="margin-bottom:1.5rem;padding:.7rem;background:#f9f9fb;border-radius:10px;border:1px solid #e5e5e5">';
+    html += '<div style="font-weight:bold;font-size:.95rem;margin-bottom:.6rem;color:#7c3aed">STYLE : ' + (st.title || '') + '</div>';
+    for (var i = 0; i < SCENES.length; i++) {
+      var key = 'scene_' + s + '_' + i;
+      html += '<div id="card-' + key + '" style="background:#fff;border:2px solid #e5e5e5;border-radius:10px;padding:.6rem;margin-bottom:.7rem">';
+      html += '<img id="img-' + key + '" style="width:100%;border-radius:6px;background:#f0f0f0;aspect-ratio:16/9;object-fit:cover" src="">';
+      html += '<div style="font-size:.8rem;font-weight:bold;margin-top:.4rem">Scene ' + (i+1) + '</div>';
+      html += '<div style="font-size:.7rem;color:#666">' + ((SCENES[i].scene.description || '').substring(0, 100)) + '</div>';
+      html += '<div id="st-' + key + '" style="font-size:.72rem;margin-top:.3rem;color:#666">En attente</div>';
+      html += '<div id="animer-' + key + '" style="display:none;margin-top:.5rem">';
+      html += '<button onclick="lancerVideo(' + s + ',' + i + ')" id="btnvideo-' + key + '" style="padding:.6rem;width:100%;font-size:.8rem;background:#ff5a1f;color:#fff;border:none;border-radius:6px;font-weight:bold">GENERER LA VIDEO</button>';
+      html += '<div id="vstat-' + key + '" style="font-size:.68rem;color:#666;margin-top:.3rem;font-family:monospace;text-align:center;white-space:pre-wrap"></div>';
+      html += '<div id="vwrap-' + key + '"></div>';
+      html += '</div></div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('scenesGrid').innerHTML = html;
+}
+
+function genererImagesSequentielles(styleIdx, sceneIdx) {
+  if (styleIdx >= STYLES_CHOISIS.length) {
+    setOut('genOut', 'TOUTES LES IMAGES GENEREES !', '#e8f5e9');
+    return;
+  }
+  if (sceneIdx >= SCENES.length) {
+    genererImagesSequentielles(styleIdx + 1, 0);
+    return;
+  }
+
+  var style = STYLES_CHOISIS[styleIdx];
+  var scene = SCENES[sceneIdx];
+  var key = 'scene_' + styleIdx + '_' + sceneIdx;
+  var st = document.getElementById('st-' + key);
+  if (st) st.textContent = 'Generation...';
+
+  var personnage = SCENARIO.character_description || '';
+  var base = SCENARIO.style_base_prompt || '';
+  var userPrompt = document.getElementById('monPrompt').value.trim();
+
+  var fullPrompt = 'Cinematic keyframe image. ' +
+    'Character (must stay identical across all scenes): ' + personnage + '. ' +
+    'Style base: ' + base + '. ' +
+    'Apply this specific style: ' + (style.prompt || '') + '. ' +
+    'This is SCENE ' + (sceneIdx + 1) + ' of the film. ' +
+    'Scene description: ' + scene.imagePrompt + '. ' +
+    'User context: ' + userPrompt + '. ' +
+    'Cinematic quality, high detail, professional lighting, 16:9 aspect ratio.';
+
+  fetch('https://apihub.agnes-ai.com/v1/images/generations', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'agnes-image-2.1-flash', prompt: fullPrompt, n: 1, size: '1K', ratio: '16:9' })
+  })
+  .then(function(r) { return r.text(); })
+  .then(function(txt) {
+    var data = JSON.parse(txt);
+    var item = data.data && data.data[0];
+    var imgUrl = item && (item.url || (item.b64_json ? 'data:image/png;base64,' + item.b64_json : null));
+    if (!imgUrl) {
+      if (st) { st.textContent = 'Erreur image'; st.style.color = '#c00'; }
+      setTimeout(function() { genererImagesSequentielles(styleIdx, sceneIdx + 1); }, 1500);
+      return;
+    }
+    scene.imageUrl = imgUrl;
+    var imgEl = document.getElementById('img-' + key);
+    if (imgEl) imgEl.src = imgUrl;
+    if (st) { st.innerHTML = '<span style="color:#16a34a">Image OK</span>'; }
+    var animerEl = document.getElementById('animer-' + key);
+    i
